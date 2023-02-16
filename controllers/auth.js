@@ -38,18 +38,16 @@ module.exports.login = (req, res, next) => {
 
 module.exports.createUser = (req, res, next) => {
   const {
-    email, password, name, about, avatar,
+    email, password, name,
   } = req.body;
   bcrypt
     .hash(password, 10)
     .then((hash) => userSchema.create({
-      email, password: hash, name, about, avatar,
+      email, password: hash, name,
     }))
     .then((user) => res.status(201).send({
       email: user.email,
       name: user.name,
-      about: user.about,
-      avatar: user.avatar,
       _id: user._id,
       __v: user.__v,
     }))

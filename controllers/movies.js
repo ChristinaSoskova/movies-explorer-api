@@ -1,4 +1,4 @@
-const cardSchema = require('../models/card');
+const MovieSchema = require('../models/movie');
 const NotFound = require('../errors/NotFound');
 const CurrentError = require('../errors/CurrentError');
 const BadRequest = require('../errors/BadRequest');
@@ -6,10 +6,10 @@ const BadRequest = require('../errors/BadRequest');
 module.exports.createMovie = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
-  cardSchema
+  MovieSchema
     .create({ name, link, owner })
     .then((card) => {
-      cardSchema.populate(card, ['owner'])
+      MovieSchema.populate(card, ['owner'])
         .then((newcard) => res.send(newcard));
     })
     .catch((error) => {
@@ -24,7 +24,7 @@ module.exports.createMovie = (req, res, next) => {
 };
 
 module.exports.getMovies = (req, res, next) => {
-  cardSchema
+  MovieSchema
     .find({})
     .sort({ createdAt: -1 })
     .populate(['owner', 'likes'])
@@ -33,7 +33,7 @@ module.exports.getMovies = (req, res, next) => {
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  cardSchema
+  MovieSchema
     .findById(req.params.cardId)
     .orFail(new NotFound('Передан несуществующий _id карточки'))
     .then((card) => {

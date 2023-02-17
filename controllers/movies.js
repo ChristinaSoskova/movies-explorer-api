@@ -8,14 +8,14 @@ module.exports.createMovie = (req, res, next) => {
   const owner = req.user._id;
   MovieSchema
     .create({ name, link, owner })
-    .then((card) => {
-      MovieSchema.populate(card, ['owner'])
-        .then((newcard) => res.send(newcard));
+    .then((movie) => {
+      MovieSchema.populate(movie, ['owner'])
+        .then((newMovie) => res.send(newMovie));
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
         next(
-          new BadRequest('Переданы некорректные данные при создании карточки'),
+          new BadRequest('Переданы некорректные данные при создании фильма'),
         );
       } else {
         next(error);
@@ -28,26 +28,26 @@ module.exports.getMovies = (req, res, next) => {
     .find({})
     .sort({ createdAt: -1 })
     .populate(['owner', 'likes'])
-    .then((cards) => res.send(cards))
+    .then((movie) => res.send(movie))
     .catch(next);
 };
 
 module.exports.deleteMovie = (req, res, next) => {
   MovieSchema
-    .findById(req.params.cardId)
+    .findById(req.params.movieId)
     .orFail(new NotFound('Передан несуществующий _id карточки'))
-    .then((card) => {
-      if (!card.owner.equals(req.user._id)) {
-        return next(new CurrentError('Вы не можете удалить чужую карточку'));
+    .then((movie) => {
+      if (!movie.owner.equals(req.user._id)) {
+        return next(new CurrentError('Вы не можете удалить чужой фильм'));
       }
 
-      return card
+      return movie
         .remove()
-        .then(() => res.send({ message: 'Карточка успешно удалена' }));
+        .then(() => res.send({ message: 'Фильм успешно удален из подборки' }));
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        return next(new BadRequest('Некорректные данные карточки.'));
+        return next(new BadRequest('Некорректные данные фильма.'));
       }
       return next(error);
     });

@@ -20,11 +20,11 @@ module.exports.getCurrentUser = (req, res, next) => {
 
 
 module.exports.updateInfo = (req, res, next) => {
-  const { name, about } = req.body;
+  const { name, email } = req.body;
   userSchema
     .findByIdAndUpdate(
       req.user._id,
-      { name, about },
+      { name, email },
       { new: true, runValidators: true },
     )
     .then((user) => {

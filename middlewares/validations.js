@@ -28,8 +28,6 @@ module.exports.validationLogin = celebrate({
 module.exports.validationCreateUser = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().custom(validationUrl),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
@@ -38,20 +36,29 @@ module.exports.validationCreateUser = celebrate({
 module.exports.validationUpdateUser = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),
-    about: Joi.string().min(2).max(30).required(),
+    email: Joi.string().required().email(),
   }),
 });
 
 
 module.exports.validationCreateMovie = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30).required(),
-    link: Joi.string().required().custom(validationUrl),
+    country: Joi.string().required(),
+    director: Joi.string().required(),
+    duration: Joi.number().required(),
+    year: Joi.number().required(),
+    description: Joi.string().required(),
+    image: Joi.string().required().custom(validationUrl),
+    trailer: Joi.string().required().custom(validationUrl),
+    thumbnail: Joi.string().required().custom(validationUrl),
+    movieId: Joi.number().required(),
+    nameRU: Joi.string().required(),
+    nameEN: Joi.string().required(),
   }),
 });
 
 module.exports.validationMovieById = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().required().custom(validationID),
+    movieId: Joi.string().required().custom(validationID),
   }),
 });

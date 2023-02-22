@@ -42,7 +42,7 @@ module.exports.validationUpdateUser = celebrate({
 
 
 module.exports.validationCreateMovie = celebrate({
-  body: Joi.object().keys({
+    body: Joi.object().keys({
     country: Joi.string().required(),
     director: Joi.string().required(),
     duration: Joi.number().required(),
@@ -59,6 +59,6 @@ module.exports.validationCreateMovie = celebrate({
 
 module.exports.validationMovieById = celebrate({
   params: Joi.object().keys({
-    movieId: Joi.string().required().custom(validationID),
+    movieId: Joi.string().hex().length(24),
   }),
 });

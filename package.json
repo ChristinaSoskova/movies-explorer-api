@@ -1,5 +1,5 @@
 {
-  "name": "movies-explorer-api",
+"name": "movies-explorer-api",
   "version": "1.0.0",
   "description": "Бэкенд для диплома Яндекс.Практикум",
   "main": "index.js",

@@ -4,14 +4,34 @@ const CurrentError = require('../errors/CurrentError');
 const BadRequest = require('../errors/BadRequest');
 
 module.exports.createMovie = (req, res, next) => {
-  const { name, link } = req.body;
-  const owner = req.user._id;
+  const {
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailer,
+    thumbnail,
+    movieId,
+    nameRU,
+    nameEN } = req.body;
   MovieSchema
-    .create({ name, link, owner })
-    .then((movie) => {
-      MovieSchema.populate(movie, ['owner'])
-        .then((newMovie) => res.send(newMovie));
+    .create({
+      country,
+      director,
+      duration,
+      year,
+      description,
+      image,
+      trailer,
+      thumbnail,
+      movieId,
+      nameRU,
+      nameEN,
+      owner: req.user._id
     })
+    .then((movie) => res.send(movie))
     .catch((error) => {
       if (error.name === 'ValidationError') {
         next(
@@ -25,22 +45,21 @@ module.exports.createMovie = (req, res, next) => {
 
 module.exports.getMovies = (req, res, next) => {
   MovieSchema
-    .find({})
-    .sort({ createdAt: -1 })
-    .populate(['owner', 'likes'])
-    .then((movie) => res.send(movie))
+  .find({ owner: req.user._id })
+    .then((movies) => {
+      res.send(movies);
+    })
     .catch(next);
 };
 
 module.exports.deleteMovie = (req, res, next) => {
   MovieSchema
     .findById(req.params.movieId)
-    .orFail(new NotFound('Передан несуществующий _id карточки'))
+    .orFail(new NotFound('Передан несуществующий _id фильма'))
     .then((movie) => {
       if (!movie.owner.equals(req.user._id)) {
-        return next(new CurrentError('Вы не можете удалить чужой фильм'));
+        return next(new CurrentError('Вы не можете удалить фильм'));
       }
-
       return movie
         .remove()
         .then(() => res.send({ message: 'Фильм успешно удален из подборки' }));

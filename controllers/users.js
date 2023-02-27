@@ -1,6 +1,7 @@
 const userSchema = require('../models/user');
 const BadRequest = require('../errors/BadRequest');
 const NotFound = require('../errors/NotFound');
+const ConflictError = require('../errors/ConflictError');
 
 module.exports.getCurrentUser = (req, res, next) => {
   userSchema
@@ -18,7 +19,6 @@ module.exports.getCurrentUser = (req, res, next) => {
     });
 };
 
-
 module.exports.updateInfo = (req, res, next) => {
   const { name, email } = req.body;
   userSchema
@@ -34,8 +34,9 @@ module.exports.updateInfo = (req, res, next) => {
       res.status(200).send(user);
     })
     .catch((error) => {
-      // eslint-disable-next-line no-undef
-      if (error.name === 'ValidationError' || err.name === 'CastError') {
+      if (error.code === 11000) {
+        next(new ConflictError('Пользователь с таким email уже существует'));
+      } else if (error.name === 'ValidationError' || error.name === 'CastError') {
         next(
           new BadRequest('Переданы некорректные данные при обновлении профиля.'),
         );

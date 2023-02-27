@@ -11,12 +11,12 @@ const validationUrl = (url) => {
   throw new BadRequest('Некорректный адрес URL');
 };
 
-const validationID = (id) => {
-  if (/^[0-9a-fA-F]{24}$/.test(id)) {
-    return id;
-  }
-  throw new BadRequest('Передан некорретный id.');
-};
+// const validationID = (id) => {
+//   if (/^[0-9a-fA-F]{24}$/.test(id)) {
+//     return id;
+//   }
+//   throw new BadRequest('Передан некорретный id.');
+// };
 
 module.exports.validationLogin = celebrate({
   body: Joi.object().keys({
@@ -27,7 +27,7 @@ module.exports.validationLogin = celebrate({
 
 module.exports.validationCreateUser = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
+    name: Joi.string().required().min(2).max(30),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
@@ -40,13 +40,12 @@ module.exports.validationUpdateUser = celebrate({
   }),
 });
 
-
 module.exports.validationCreateMovie = celebrate({
-    body: Joi.object().keys({
+  body: Joi.object().keys({
     country: Joi.string().required(),
     director: Joi.string().required(),
     duration: Joi.number().required(),
-    year: Joi.number().required(),
+    year: Joi.string().required(),
     description: Joi.string().required(),
     image: Joi.string().required().custom(validationUrl),
     trailer: Joi.string().required().custom(validationUrl),

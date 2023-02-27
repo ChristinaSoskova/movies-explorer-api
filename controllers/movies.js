@@ -15,7 +15,8 @@ module.exports.createMovie = (req, res, next) => {
     thumbnail,
     movieId,
     nameRU,
-    nameEN } = req.body;
+    nameEN,
+  } = req.body;
   MovieSchema
     .create({
       country,
@@ -29,7 +30,7 @@ module.exports.createMovie = (req, res, next) => {
       movieId,
       nameRU,
       nameEN,
-      owner: req.user._id
+      owner: req.user._id,
     })
     .then((movie) => res.send(movie))
     .catch((error) => {
@@ -45,7 +46,7 @@ module.exports.createMovie = (req, res, next) => {
 
 module.exports.getMovies = (req, res, next) => {
   MovieSchema
-  .find({ owner: req.user._id })
+    .find({ owner: req.user._id })
     .then((movies) => {
       res.send(movies);
     })
@@ -71,4 +72,3 @@ module.exports.deleteMovie = (req, res, next) => {
       return next(error);
     });
 };
-
